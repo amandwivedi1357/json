@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Json-server</title>
+</head>
+<body>
+    <h1>Add Product</h1>
+    <input type="text" id="id" placeholder="id">
+    <input type="text" id="title" placeholder="title">
+    <input type="text" id="author" placeholder="author">
+    <button onclick="addPost()">Submit</button>
+
+    <h1>Delete posts</h1>
+   
+    <input type="text" id="delete">
+    <button onclick="deletePost()">Delete</button>
+    
+    <h1>Update Post</h1>
+
+    <input type="text" id="Uid" placeholder="id">
+    <input type="text" id="Utitle" placeholder="title">
+    <input type="text" id="Uauthor" placeholder="author">
+
+    <button onclick="updatePost()">Update</button>
+
+    <h1>Get Posts</h1>
+    <button onclick="getPost()">get post</button>
+
+    
+    <div id="posts">
+
+    </div>
+</body>
+</html>
+<script>
+    async function addPost(){
+        let id = document.getElementById("id").value
+        let title = document.getElementById("title").value
+        let author =document.getElementById("author").value
+
+
+    let data_to_Send = {
+        id,title,author
+    }
+        let res = await fetch(`http://localhost:3000/posts`,{
+            method:"POST",
+            body:JSON.stringify(data_to_Send),
+            headers:{
+                "Content-type":"application/json"
+            }
+        })
+        let data = await res.json();
+        console.log(data)
+    }
+
+    async function getPost(){
+        let res = await fetch(`http://localhost:3000/posts`)
+        let data =await res.json();
+        display(data)
+    }
+
+    function display(data){
+        let posts = document.getElementById("posts")
+
+        data.forEach(el=>{
+            
+            let h1 = document.createElement("h1");
+            h1.innerText=`id:${el.id}`
+            let h2 = document.createElement("h2");
+            h2.innerText=`title:${el.title}`
+            let h3 = document.createElement("h3");
+            h3.innerText=`author:${el.author}`
+
+            posts.append(h1,h2,h3)
+        })
+    }
+    async function deletePost(){
+        let id = document.getElementById("delete").value
+
+        let data_to_Send = {
+        id
+    }
+        let res = await fetch(`http://localhost:3000/posts/${id}`,{
+            method:"DELETE",
+            body:JSON.stringify(data_to_Send),
+            headers:{
+                "Content-type":"application/json"
+            }
+        })
+        let data = await res.json();
+        console.log(data)
+    }
+
+
+    async function updatePost(){
+        let id = document.getElementById("Uid").value
+        let title = document.getElementById("Utitle").value
+        let author =document.getElementById("Uauthor").value
+
+
+    let data_to_Send = {
+        id,title,author
+    }
+        let res = await fetch(`http://localhost:3000/posts/${id}`,{
+            method:"PATCH",
+            body:JSON.stringify(data_to_Send),
+            headers:{
+                "Content-type":"application/json"
+            }
+        })
+        let data = await res.json();
+        console.log(data)
+    }
+</script>
